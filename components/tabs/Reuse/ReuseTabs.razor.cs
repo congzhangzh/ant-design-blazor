@@ -43,7 +43,7 @@ namespace AntDesign
             set => Navmgr.NavigateTo(value == "/" ? "" : value);
         }
 
-        private ReuseTabsPageItem[] Pages => _pageMap.Values.Where(x => !x.Ignore).OrderBy(x => x.CreatedAt).ToArray();
+        private ReuseTabsPageItem[] Pages => _pageMap.Values.Where(x => !x.Ignore).OrderBy(x => x.CreatedAt).ThenBy(x => x.Order).ToArray();
 
         public ReuseTabs()
         {
@@ -132,6 +132,7 @@ namespace AntDesign
                 pageItem.Ignore = attr.Ignore;
                 pageItem.Closable = attr.Closable;
                 pageItem.Pin = attr.Pin;
+                pageItem.Order = attr.Order;
             }
 
             pageItem.Title ??= url.ToRenderFragment();
@@ -184,7 +185,7 @@ namespace AntDesign
 
             var reuseTabsPageItem = new ReuseTabsPageItem();
             GetPageInfo(reuseTabsPageItem, pageType, url, Activator.CreateInstance(pageType));
-            reuseTabsPageItem.CreatedAt = DateTime.Now;
+            reuseTabsPageItem.CreatedAt = DateTime.MinValue;
             reuseTabsPageItem.Url = url;
             _pageMap[url] = reuseTabsPageItem;
         }
